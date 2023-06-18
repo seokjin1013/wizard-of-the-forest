@@ -47,7 +47,7 @@ class Player(pygame.sprite.Sprite):
 		
 		# attack
 		if pygame.mouse.get_pressed()[0]:
-			group.add(Bullet(self.rect, view.rect.topleft))
+			group.add(Bullet(self.rect, view.rect.topleft, 20))
 
 	def update(self):
 		self.input()
@@ -55,9 +55,11 @@ class Player(pygame.sprite.Sprite):
     		
 # bullet class
 class Bullet(pygame.sprite.Sprite):
-	def __init__(self, player_pos, camera_pos):
+	def __init__(self, player_pos, camera_pos, duration_limit):
 		# set position, speed, velocity, some of physics variables
 		super().__init__()
+		self.duration_limit = duration_limit
+		self.dura = 0
 		self.image = pygame.Surface((10, 10))
 		self.image.fill((255, 0, 0))
 		self.pos = pygame.math.Vector2(player_pos.center)
@@ -71,6 +73,10 @@ class Bullet(pygame.sprite.Sprite):
 		# move
 		self.pos += self.vel
 		self.rect.center = self.pos
+		if self.dura <= self.duration_limit:
+			self.dura += 1
+		else:
+			self.kill()
 
 		# if collide with enemy, kill both objects
 		if pygame.sprite.spritecollide(self, tree_group, True, pygame.sprite.collide_mask):
