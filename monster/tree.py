@@ -8,9 +8,11 @@ class Tree(pygame.sprite.Sprite):
 		self.image = ww.Images.tree
 		self.rect = self.image.get_rect(topleft=pos)
 		self.speed = 1
+		self.mhp = 5
+		self.hp = self.mhp
 
 	def update(self):
-		vel = pygame.math.Vector2(ww.player.rect.center) - pygame.math.Vector2(self.rect.center)
+		vel = ww.player.pos - self.pos
 		vel = vel.normalize() * self.speed
 
 		for x in ww.tree_group.sprites():
@@ -22,7 +24,6 @@ class Tree(pygame.sprite.Sprite):
 				break
 
 		self.pos += vel
-		self.rect.center = self.pos	
-			
-		if pygame.sprite.spritecollide(self, ww.player_group, False, pygame.sprite.collide_mask):
+		self.rect.center = self.pos
+		if self.hp == 0:
 			self.kill()
