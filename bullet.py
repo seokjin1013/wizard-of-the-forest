@@ -29,5 +29,8 @@ class Bullet(pygame.sprite.Sprite):
 		else:
 			self.kill()
 
-		if pygame.sprite.spritecollide(self, ww.tree_group, True, pygame.sprite.collide_mask):
+		collided = pygame.sprite.spritecollide(self, ww.tree_group, False, pygame.sprite.collide_mask)
+		if collided:
+			for sprite in collided:
+				sprite.hp -= 1
 			self.kill()
