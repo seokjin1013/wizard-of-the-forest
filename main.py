@@ -1,17 +1,18 @@
 import pygame, sys
-import math
 from random import randint
+
 
 class Tree(pygame.sprite.Sprite):
 	def __init__(self,pos,group):
 		super().__init__(group)
-		self.image = pygame.image.load('assets/tree.png').convert_alpha()
+		self.image = pygame.image.load('./assets/tree.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft = pos)
+
 
 class Player(pygame.sprite.Sprite):
 	def __init__(self,pos,group):
 		super().__init__(group)
-		self.image = pygame.image.load('assets/player.png').convert_alpha()
+		self.image = pygame.image.load('./assets/player.png').convert_alpha()
 		self.rect = self.image.get_rect(center = pos)
 		self.direction = pygame.math.Vector2()
 		self.speed = 5
@@ -37,31 +38,15 @@ class Player(pygame.sprite.Sprite):
 		self.input()
 		self.rect.center += self.direction * self.speed
 
-	def create_bullet(self, camera_pos, camera_group):
-		return Bullet(self.rect, camera_pos, camera_group)
-    		
-
 class Bullet(pygame.sprite.Sprite):
-	def __init__(self, player_pos, camera_pos, group):
+	def __init__(self,pos,group):
 		super().__init__(group)
-		self.image = pygame.Surface((10,10))
+		self.image = pygame.Surface((50,10))
 		self.image.fill((255,0,0))
-
-		self.pos = pygame.math.Vector2()
-		self.pos.x = player_pos.x
-		self.pos.y = player_pos.y
-
-		self.rect = self.image.get_rect(center = self.pos)
+		self.rect = self.image.get_rect(center = pos)
 		self.direction = pygame.math.Vector2()
 		self.speed = 15
-		self.vel = pygame.math.Vector2()
-		self.angle = math.atan2(self.pos.y - pygame.mouse.get_pos()[1] - camera_pos.x ,self.pos.x - pygame.mouse.get_pos()[0] - camera_pos.y)
-		self.vel.x = self.speed * math.cos(self.angle)
-		self.vel.y = self.speed * math.sin(self.angle)
 
-	def update(self):
-		self.rect.x -= int(self.vel.x)
-		self.rect.y -= int(self.vel.y)
 
 class CameraGroup(pygame.sprite.Group):
 	def __init__(self):
@@ -82,7 +67,7 @@ class CameraGroup(pygame.sprite.Group):
 		self.camera_rect = pygame.Rect(l,t,w,h)
 
 		# ground
-		self.ground_surf = pygame.image.load('assets/ground.png').convert_alpha()
+		self.ground_surf = pygame.image.load('./assets/ground.png').convert_alpha()
 		self.ground_rect = self.ground_surf.get_rect(topleft = (0,0))
 
 		# camera speed
@@ -145,7 +130,6 @@ class FPS:
 pygame.init()
 screen = pygame.display.set_mode((1280,720))
 clock = pygame.time.Clock()
-pygame.event.set_grab(True)
 fps = FPS() 
 # setup 
 camera_group = CameraGroup()
@@ -156,7 +140,7 @@ for i in range(20):
 	random_y = randint(0,1000)
 	Tree((random_x,random_y),camera_group)
 
-bullet_group = pygame.sprite.Group()
+font = pygame.font.SysFont('arial', 30, True, True)
 
 while True:
 	for event in pygame.event.get():
@@ -167,16 +151,16 @@ while True:
 			if event.key == pygame.K_ESCAPE:
 				pygame.quit()
 				sys.exit()
-		if event.type == pygame.MOUSEBUTTONDOWN:
-			camera_group.add(player.create_bullet(camera_group.offset, camera_group))
-			
+
 		if event.type == pygame.MOUSEWHEEL:
 			camera_group.zoom_scale += event.y * 0.03
+		
+		#if event.type == pygame.MOUSEBUTTONDOWN:
 
 	screen.fill('#71ddee')
 	camera_group.update()
 	camera_group.custom_draw(player)
 	fps.render(screen)
 	pygame.display.update()
-	print(camera_group.offset, camera_group.zoom_scale, pygame.mouse.get_pos())
+	print(camera_group.offset)
 	fps.clock.tick(60)
