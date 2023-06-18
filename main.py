@@ -11,6 +11,12 @@ class Tree(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect(topleft=pos)
 
 
+	def update(self):
+		if pygame.sprite.spritecollide(self, pygame.sprite.GroupSingle(player), False, pygame.sprite.collide_mask):
+			self.kill()
+		if pygame.sprite.spritecollide(self, bullet_group, False, pygame.sprite.collide_mask):
+			self.kill()
+
 class Player(pygame.sprite.Sprite):
 	def __init__(self, pos):
 		super().__init__()
@@ -134,6 +140,7 @@ player = Player((640,360))
 group.add(player)
 
 view = View(pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), player)
+bullet_group = pygame.sprite.Group()
 
 for i in range(20):
 	random_x = randint(0,1000)
@@ -149,9 +156,9 @@ while True:
 			if event.key == pygame.K_ESCAPE:
 				pygame.quit()
 				sys.exit()
-				
+
 		if pygame.mouse.get_pressed()[0]:
-			group.add(player.create_bullet(view.rect.topleft))
+			bullet_group.add(player.create_bullet(view.rect.topleft))
 			
 		# if event.type == pygame.MOUSEWHEEL:
 		# 	view.sight_scale += event.y * 0.03
