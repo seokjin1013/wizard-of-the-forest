@@ -63,6 +63,7 @@ class Player(LifeInstance, BrightInstance):
 	def update(self):
 		super().update()
 
+		# playing key input
 		if ww.phase == ww.PHASE.PLAY:
 			self.direction = ww.controller.direction
 			self.body.linearVelocity = self.direction * self.stat.speed
@@ -101,6 +102,7 @@ class Player(LifeInstance, BrightInstance):
 		self.shift_time = max(self.shift_time - 1 / (25 - ww.player.skill_level[2] * 0.7) / ww.FPS, 0)
 
 	def kill(self):
+		# gameover effect
 		ww.group.add(PlayerDeath(self))
 		ww.view.add_flash()
 		ww.view.add_shake(3, 3)

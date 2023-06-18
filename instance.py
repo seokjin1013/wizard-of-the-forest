@@ -2,12 +2,14 @@ import pygame
 import ww
 import numpy as np
 
+# all of instance
 class Instance(pygame.sprite.Sprite):
 	def __init__(self, pos):
 		super().__init__()
 		self.pos = pygame.Vector2(pos)
 		
-
+		
+# drawable in surface screen
 class DrawableInstance(Instance):
 	def __init__(self, pos):
 		super().__init__(pos)
@@ -53,6 +55,7 @@ class DrawableInstance(Instance):
 		return self.normals_index[int(self.image_index)]
 
 
+# collidable, monster or player etc.
 class CollidableInstance(Instance):
 	def __init__(self, pos):
 		super().__init__(pos)
@@ -82,6 +85,7 @@ class CollidableInstance(Instance):
 		super().kill()
 
 
+# self-light objects like lightening or skill effects
 class BrightInstance(Instance):
 	def __init__(self, pos):
 		super().__init__(pos)
@@ -92,6 +96,7 @@ class BrightInstance(Instance):
 		super().kill()
 
 
+# like monster, player.
 class LifeInstance(CollidableInstance, DrawableInstance):
 	def __init__(self, pos):
 		super().__init__(pos)
@@ -121,6 +126,7 @@ class LifeInstance(CollidableInstance, DrawableInstance):
 		return self.normals_index[int(self.image_index)]
 
 
+# like particle effects
 class TemporaryInstance(Instance):
 	def __init__(self, pos):
 		super().__init__(pos)
@@ -134,6 +140,7 @@ class TemporaryInstance(Instance):
 		super().update()
 
 
+# just bullet, quick and short duration
 class BulletInstance(TemporaryInstance, CollidableInstance, DrawableInstance):
 	def __init__(self, pos):
 		super().__init__(pos)

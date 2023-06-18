@@ -4,6 +4,8 @@ from monster.tree import *
 import numpy as np
 import pygame
 
+
+# monster constructor
 class MonsterConstuctor:
 	def __init__(self):
 		super().__init__()
@@ -25,6 +27,7 @@ class MonsterConstuctor:
 			# print(random_number)
 			name = self.monster_list[random_number[0]]
 			
+			# spawn where outside of screen
 			sprite = ww.sprites[name]
 			r = pygame.Vector2(sprite.images[0].get_bounding_rect().size)
 			size = ww.SCREEN_SIZE + r

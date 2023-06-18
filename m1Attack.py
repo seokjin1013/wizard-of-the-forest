@@ -8,6 +8,7 @@ from damage_number import DamageNumber
 from random import random
 from item import *
 
+# left mouse click attack
 class M1Attack(BulletInstance, BrightInstance):
 	def __init__(self, pos, stat: Status):
 		super().__init__(pos)
@@ -46,6 +47,7 @@ class M1Attack(BulletInstance, BrightInstance):
 
 		super().update()
 
+# right mouse click attack
 class M2Attack(CollidableInstance, DrawableInstance, BrightInstance):
 	def __init__(self, pos, stat: Status):
 		super().__init__(pos)
@@ -89,6 +91,7 @@ class M2Attack(CollidableInstance, DrawableInstance, BrightInstance):
 			self.kill()
 		super().update()
 
+# shift move skill
 class ShiftMove(CollidableInstance, DrawableInstance, BrightInstance):
 	def __init__(self, pos, stat: Status):
 		super().__init__(pos)

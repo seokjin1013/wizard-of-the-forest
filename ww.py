@@ -43,6 +43,9 @@ import pathlib
 import json
 import os
 
+# load all of resources first only one
+
+# abstraction of graphics
 class Sprite:
 	def __init__(self, path: pathlib.Path):
 		paths = path.glob('*.png')
@@ -103,6 +106,7 @@ def _get_ellipsis_vertices(sprite):
 		vertices.append([x, y])
 	return vertices
 
+# collision cateogory
 class CategoryBits(IntEnum):
 	PLAYER  = 0b0000_0000_0000_0001
 	BULLET  = 0b0000_0000_0000_0010
@@ -115,6 +119,7 @@ basic_sprite = {
 	M2Attack: sprites['skill_effect_m2'],
 }
 
+# attach fixture to objects for collision checking and allocate collision category
 fixture_defs = {
 	Player: Box2D.b2FixtureDef(
 		density=100.0, categoryBits=CategoryBits.PLAYER, maskBits=CategoryBits.MONSTER,
