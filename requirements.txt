@@ -1,2 +1,4 @@
 pygame==2.4.0
 box2d-py==2.3.8
+moderngl==5.8.2
+numpy==1.25.0
