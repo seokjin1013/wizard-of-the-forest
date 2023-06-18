@@ -29,6 +29,9 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
+![image](https://github.com/seokjin1013/wizard-of-the-forest-3/assets/63408412/5f1846d9-38f0-4c40-8c8e-eb4704446b28)
+
+
 # Execute
 
 ```
