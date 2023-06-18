@@ -39,6 +39,9 @@ class Player(pygame.sprite.Sprite):
 			self.direction.x = -1
 		else:
 			self.direction.x = 0
+			
+		if pygame.mouse.get_pressed()[0]:
+			group.add(Bullet(self.rect, view.rect.topleft))
 
 	def update(self):
 		self.input()
@@ -144,10 +147,10 @@ fps = FPS()
 
 group = pygame.sprite.Group()
 player = Player((640,360))
-group.add(player)
+player_group = pygame.sprite.GroupSingle(player)
+group.add(player_group)
 
 view = View(pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), player)
-bullet_group = pygame.sprite.Group()
 tree_group = pygame.sprite.Group()
 
 for i in range(20):
@@ -167,11 +170,9 @@ while True:
 				pygame.quit()
 				sys.exit()
 
-		if pygame.mouse.get_pressed()[0]:
-			group.add(player.create_bullet(view.rect.topleft))
-			
-		# if event.type == pygame.MOUSEWHEEL:
-		# 	view.sight_scale += event.y * 0.03
+		# if pygame.mouse.get_pressed()[0]:
+		# 	print(len(group.sprites()))
+		# 	group.add(player.create_bullet(view.rect.topleft))
 
 	view.step()
 	view.draw(group)
