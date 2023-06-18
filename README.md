@@ -17,12 +17,16 @@ apt update && upgrade
 apt install python3 python3-pip
 ```
 
+## Download this repository
+
+In WSL Ubuntu, clone this repository and enter the project directory
+
 ## Install library
 
 ```
 python -m venv .venv
 . .venv/bin/activate
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 # Execute
@@ -35,7 +39,9 @@ python main.py
 
 Move: W, A, S, D
 
-Attack: Mouse Click
+Attack: Left Mouse Click
+
+Skill : Right Mouse Click / Shift Key
 
 ![Play Screenshot](readme/image1.png)
 ![Play Screenshot](readme/image2.png)
