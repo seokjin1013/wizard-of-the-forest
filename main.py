@@ -1,5 +1,6 @@
 import pygame, sys
 from random import randint
+from math import atan2, degrees, pi
 
 # window size
 SCREEN_WIDTH = 1280
@@ -25,6 +26,8 @@ class Player(pygame.sprite.Sprite):
 		self.rect = self.image.get_rect(center=pos)
 		self.direction = pygame.math.Vector2()
 		self.speed = 5
+		self.attack_time = 0
+		self.attack_delay = 5
 
 	def input(self):
 		# input key
@@ -44,26 +47,35 @@ class Player(pygame.sprite.Sprite):
 			self.direction.x = -1
 		else:
 			self.direction.x = 0
-		
+			
 		# attack
-		if pygame.mouse.get_pressed()[0]:
-			group.add(Bullet(self.rect, view.rect.topleft, 20))
+		if pygame.mouse.get_pressed()[0] and self.attack_time == 0:
+			group.add(Bullet(self.rect, view.rect.topleft))
+			self.attack_time = self.attack_delay
 
 	def update(self):
 		self.input()
 		self.rect.center += self.direction * self.speed
+		self.attack_time = max(self.attack_time - 1, 0)
     		
 # bullet class
 class Bullet(pygame.sprite.Sprite):
-	def __init__(self, player_pos, camera_pos, duration_limit):
+	def __init__(self, player_pos, camera_pos):
 		# set position, speed, velocity, some of physics variables
 		super().__init__()
-		self.duration_limit = duration_limit
-		self.dura = 0
 		self.image = pygame.Surface((10, 10))
 		self.image.fill((255, 0, 0))
 		self.pos = pygame.math.Vector2(player_pos.center)
+		self.image = pygame.image.load('assets/bullet.png').convert_alpha()
 		self.rect = self.image.get_rect(center=self.pos)
+
+		dx = pygame.math.Vector2(pygame.mouse.get_pos())[0] - player_pos.center[0]
+		dy = pygame.math.Vector2(pygame.mouse.get_pos())[1] - player_pos.center[1]
+		rads = atan2(-dy, dx)
+		rads %= 2*pi
+		degs = degrees(rads)
+		
+		self.image = pygame.transform.rotate(self.image, degs)
 
 		self.speed = 15
 		self.vel = pygame.math.Vector2(pygame.mouse.get_pos()) + camera_pos - player_pos.center
@@ -73,10 +85,6 @@ class Bullet(pygame.sprite.Sprite):
 		# move
 		self.pos += self.vel
 		self.rect.center = self.pos
-		if self.dura <= self.duration_limit:
-			self.dura += 1
-		else:
-			self.kill()
 
 		# if collide with enemy, kill both objects
 		if pygame.sprite.spritecollide(self, tree_group, True, pygame.sprite.collide_mask):
