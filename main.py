@@ -9,10 +9,8 @@ from monster_constuctor import MonsterConstuctor
 from controller import Controller
 from title import Title, TitleButton
 
+# set up for starting game
 ww.group = pygame.sprite.LayeredUpdates()
-# ww.player = Player((640, 320))
-# ww.group.add(ww.player)
-# ww.group.add(Title((320, 100)))
 ww.group.add(Title((320, 180)))
 def callback():
 	ww.phase = ww.PHASE.PLAY
@@ -20,8 +18,6 @@ def callback():
 	ww.group.add(ww.player)
 	ww.view.target = ww.player
 ww.group.add(TitleButton((320, 280), 0, callback))
-# ww.group.add(TitleButton((320, 260), 1))
-# ww.group.add(TitleButton((320, 320), 2))
 ww.view = View()
 ww.monster_constructor = MonsterConstuctor()
 ww.controller = Controller()
@@ -35,7 +31,10 @@ clock = pygame.time.Clock()
 clock2 = pygame.time.Clock()
 delayed_time = 0
 
+# runtime loop
+
 while True:
+	# function key
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
@@ -47,12 +46,15 @@ while True:
 
 	delayed_time += clock.tick() - 1000 / ww.FPS
 
+	# loop operation
 	if ww.phase == ww.PHASE.PLAY:
 		ww.monster_constructor.update()
 	ww.controller.update()
 	ww.world.Step(1 / ww.FPS, 1, 1)
 	ww.group.update()
 	ww.view.update()
+
+	# frameskip
 	if delayed_time < 0:
 		clock2.tick(ww.FPS)
 		ww.view.debug_text.append(round(clock.get_fps(), 2))

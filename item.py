@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 import ww
 
+
+# shop items
 @dataclass()
 class Status:
     atk = 4

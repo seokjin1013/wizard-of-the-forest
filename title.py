@@ -3,6 +3,7 @@ import ww
 import controller
 import pygame
 
+# the title in first of game
 class Title(DrawableInstance):
     def __init__(self, pos):
         super().__init__(pos)
@@ -12,6 +13,7 @@ class Title(DrawableInstance):
         if ww.phase != ww.PHASE.TITLE:
             self.kill()
 
+# start button or exit button
 class TitleButton(DrawableInstance):
     def __init__(self, pos, idx, callback=None):
         super().__init__(pos)

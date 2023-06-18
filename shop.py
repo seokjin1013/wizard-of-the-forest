@@ -4,9 +4,12 @@ import pygame
 import item
 import random
 
+# managing shop GUI button placement and buying process
 class Shop(Instance):
     def __init__(self, pos):
         super().__init__(pos)
+
+        # draw many of buttons
 
         def draw(self, surface):
             text = ww.font20.render(f'{ww.wave}일 째', False, (0, 0, 0))
@@ -40,15 +43,6 @@ class Shop(Instance):
         item_button = ShopButton(pygame.Rect(10, 10, 80, 30), callback, draw)
         ww.group.add(item_button)
 
-        # def draw(self, surface):
-        #     text = ww.font20.render('음식', False, (0, 0, 0))
-        #     text_rect = text.get_rect(center=self.rect.center)
-        #     surface.blit(text, text_rect)
-        # def callback(s):
-        #     self.phase_set(1)
-        # item_button = ShopButton(pygame.Rect(190, 10, 80, 30), callback, draw)
-        # ww.group.add(item_button)
-
         def draw(self, surface):
             text = ww.font20.render('스킬강화', False, (0, 0, 0))
             text_rect = text.get_rect(center=self.rect.center)
@@ -78,7 +72,7 @@ class Shop(Instance):
                 text_rect = t.get_rect(topleft=pygame.Vector2(self.rect.topleft) + (10, 10) + (0, 20 * (i + 1)))
                 surface.blit(t, text_rect)
             
-            
+        # buying items
         item_button = ShopButton(pygame.Rect(460, 10, 170, 300), None, draw)
         ww.group.add(item_button)
 
@@ -100,6 +94,7 @@ class Shop(Instance):
         self.reroll_cnt = 0
         self.reroll_item()
 
+        # buying skill
         skill_name = ['기본공격', '강공격', '이동기']
         for i in range(3):
             def make_draw(i):
@@ -161,6 +156,7 @@ class Shop(Instance):
             ww.group.add(sprite)
 
 
+    # reroll items usecase
     def reroll_item(self):
         self.phase_button[0].clear()
         random_numbers = np.random.choice(len(item.items_tier3_name), 4, replace=False)
@@ -235,10 +231,7 @@ class Shop(Instance):
             self.phase_button[0].add(item_button)
 
 
-    # def make_skill(self):
-
-
-
+# check mouse position and mouse extends, click recognization
 class ShopButton(Instance):
     def __init__(self, rect, callback, draw):
         super().__init__(rect.center)

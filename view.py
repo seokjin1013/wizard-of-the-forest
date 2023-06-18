@@ -9,6 +9,8 @@ from damage_number import DamageNumber
 from shop import Shop, ShopButton
 from player import Player
 
+
+# many of shading or shaking or color overlay or screen effect
 class View:
 	MAX_NUM_LIGHT = 60
 	SHAKE_INTERVAL = 3
@@ -35,6 +37,8 @@ class View:
 
 		self.ctx = moderngl.create_context()
 		self.ctx.enable_only(moderngl.BLEND)
+
+		# shader GLSL
 		self.shader_basic = self.ctx.program(
 			vertex_shader="""
 				#version 330
@@ -130,6 +134,7 @@ class View:
 		self.shader_light['u_texture'] = 0
 		self.shader_light['u_normal'] = 1
 
+		# define vertex buffer object or array object or buffer and layer
 		self.vbo = self.ctx.buffer(None, reserve=4 * 4 * 4)
 		self.vao_basic = self.ctx.vertex_array(self.shader_basic, [(self.vbo, "2f4 2f4", "in_position", "in_uv")], mode=moderngl.TRIANGLE_FAN)
 

@@ -2,6 +2,8 @@ from instance import DrawableInstance
 import numpy as np
 
 import pygame
+
+# particle is just effect, created by shot monster or kill it.
 class Particle(DrawableInstance):
 	def __init__(self, sprite_index, pos, vel=(0,0), dur=10, image_color_mul=(1,1,1,1), dspd=0.5):
 		super().__init__(pos)
