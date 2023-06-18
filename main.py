@@ -14,8 +14,6 @@ class Tree(pygame.sprite.Sprite):
 	def update(self):
 		if pygame.sprite.spritecollide(self, pygame.sprite.GroupSingle(player), False, pygame.sprite.collide_mask):
 			self.kill()
-		if pygame.sprite.spritecollide(self, bullet_group, False, pygame.sprite.collide_mask):
-			self.kill()
 
 class Player(pygame.sprite.Sprite):
 	def __init__(self, pos):
@@ -66,6 +64,15 @@ class Bullet(pygame.sprite.Sprite):
 	def update(self):
 		self.pos += self.vel
 		self.rect.center = self.pos
+		# self.mask = pygame.mask.from_surface(self.image)
+		# self.player_mask = pygame.mask.from_surface(player.image)
+		# if self.dura <= self.duration_limit:
+		# 	self.dura += 1
+		# else:
+		# 	self.kill()
+
+		if pygame.sprite.spritecollide(self, tree_group, True, pygame.sprite.collide_mask):
+			self.kill()
 		
 
 class View:
@@ -77,13 +84,13 @@ class View:
 		self.sight_scale = 1
 
 	def step(self):
-		keys = pygame.key.get_pressed()
-		if keys[pygame.K_q]:
-			self.sight_scale += 0.01
-		if keys[pygame.K_e] and self.sight_scale > 0.2:
-			self.sight_scale -= 0.01
-		self.rect.width = SCREEN_WIDTH * self.sight_scale
-		self.rect.height = SCREEN_HEIGHT * self.sight_scale
+		# keys = pygame.key.get_pressed()
+		# if keys[pygame.K_q]:
+		# 	self.sight_scale += 0.01
+		# if keys[pygame.K_e] and self.sight_scale > 0.2:
+		# 	self.sight_scale -= 0.01
+		# self.rect.width = SCREEN_WIDTH * self.sight_scale
+		# self.rect.height = SCREEN_HEIGHT * self.sight_scale
 
 		if self.target:
 			self.rect.center = self.target.rect.center
@@ -141,11 +148,14 @@ group.add(player)
 
 view = View(pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), player)
 bullet_group = pygame.sprite.Group()
+tree_group = pygame.sprite.Group()
 
 for i in range(20):
 	random_x = randint(0,1000)
 	random_y = randint(0,1000)
-	group.add(Tree((random_x, random_y)))
+	tree_group.add(Tree((random_x, random_y)))
+group.add(tree_group)
+
 
 while True:
 	for event in pygame.event.get():
@@ -158,7 +168,7 @@ while True:
 				sys.exit()
 
 		if pygame.mouse.get_pressed()[0]:
-			bullet_group.add(player.create_bullet(view.rect.topleft))
+			group.add(player.create_bullet(view.rect.topleft))
 			
 		# if event.type == pygame.MOUSEWHEEL:
 		# 	view.sight_scale += event.y * 0.03
