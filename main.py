@@ -6,16 +6,48 @@ from math import atan2, degrees, pi
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
 
+class MonsterConstuctor:
+    def __init__(self):
+        super().__init__()
+        self.monster_list = ['Tree']
+        self.pos = view.rect.center
+        self.construtor_time = 0
+        self.construtor_delay = 60
+
+    def update(self):
+        if self.construtor_time == self.construtor_delay:
+            tree_group.add(Tree((0,0)))
+            group.add(tree_group)
+            self.construtor_time = 0
+        self.construtor_time += 1
+
+
 # enemy class
 class Tree(pygame.sprite.Sprite):
 	def __init__(self, pos):
 		super().__init__()
 		self.image = pygame.image.load('assets/tree.png').convert_alpha()
-		self.rect = self.image.get_rect(topleft=pos)
+		self.pos = pygame.Vector2(pos)
 
+		self.rect = self.image.get_rect(topleft=pos)
+		self.speed = 1
 
 	def update(self):
-		if pygame.sprite.spritecollide(self, pygame.sprite.GroupSingle(player), False, pygame.sprite.collide_mask):
+		vel = pygame.math.Vector2(player.rect.center) - pygame.math.Vector2(self.rect.center)
+		vel = vel.normalize() * self.speed
+
+		for x in tree_group.sprites():
+			if x is self:
+				continue
+			if self.rect.colliderect(x.rect):
+				vel = pygame.math.Vector2(x.rect.center) - pygame.math.Vector2(self.rect.center)
+				vel = vel.normalize() * self.speed * -3
+				break
+
+		self.pos += vel
+		self.rect.center = self.pos	
+			
+		if pygame.sprite.spritecollide(self, player_group, False, pygame.sprite.collide_mask):
 			self.kill()
 
 # player class
@@ -67,6 +99,7 @@ class Bullet(pygame.sprite.Sprite):
 		
 		self.pos = pygame.math.Vector2(pos)
 		self.image = pygame.image.load('assets/bullet.png').convert_alpha()
+		
 		self.rect = self.image.get_rect(center=self.pos)
 
 		self.speed = 15
@@ -142,6 +175,7 @@ group.add(player_group)
 
 view = View(pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), player)
 tree_group = pygame.sprite.Group()
+monster_constuctor = MonsterConstuctor()
 
 for i in range(20):
 	random_x = randint(0,1000)
@@ -163,6 +197,7 @@ while True:
 
 	view.step()
 	view.draw(group)
+	monster_constuctor.update()
 	group.update()
 	fps.render(screen)
 	pygame.display.update()
