@@ -1,8 +1,7 @@
 import pygame
-from instance import Instance
 import ww
-import math
-from monster.tree import Tree
+from instance import Instance
+from monster import *
 
 class Bullet(Instance):
 	def __init__(self, pos):
