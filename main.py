@@ -130,7 +130,6 @@ class FPS:
 pygame.init()
 screen = pygame.display.set_mode((1280,720))
 clock = pygame.time.Clock()
-pygame.event.set_grab(True)
 fps = FPS() 
 # setup 
 camera_group = CameraGroup()
