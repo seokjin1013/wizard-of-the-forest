@@ -1,36 +1,32 @@
 import pygame
+from instance import Instance
 import ww
 import math
+from monster.tree import Tree
 
-class Bullet(pygame.sprite.Sprite):
-	def __init__(self, pos, life):
-		super().__init__()
-		self.life = life
-
-		self.pos = pygame.math.Vector2(pos)
-		self.image = ww.Images.bullet
-		self.rect = self.image.get_rect(center=self.pos)
-
-		self.speed = 15
+class Bullet(Instance):
+	def __init__(self, pos):
+		super().__init__(pos)
+		self.speed = 80
+		self.mhp = 20
+		self.hp = self.mhp
 		self.vel = pygame.math.Vector2(pygame.mouse.get_pos()) + ww.view.rect.topleft - pos
-		rads = math.atan2(-self.vel.y, self.vel.x)
-		degs = math.degrees(rads)
-		self.image = pygame.transform.rotate(self.image, degs)
-		self.vel = self.vel.normalize() * self.speed
+		self.vel.scale_to_length(self.speed)
+		deg = pygame.math.Vector2().angle_to(self.vel)
+		self.image = pygame.transform.rotate(self.image, 360 - deg)
+		self.attack = 1
 		
 	def update(self):
-		self.pos += self.vel
-		self.rect.center = self.pos
-		self.mask = pygame.mask.from_surface(self.image)
-		self.player_mask = pygame.mask.from_surface(ww.player.image)
+		super().update()
+		self.body.linearVelocity = self.vel
 
-		if self.life:
-			self.life -= 1
+		for ce in self.body.contacts:
+			if isinstance(ce.other.userData, Tree):
+				ce.other.userData.hp -= self.attack
+				self.hp = 0
+				break
+
+		if self.hp:
+			self.hp -= 1
 		else:
-			self.kill()
-
-		collided = pygame.sprite.spritecollide(self, ww.tree_group, False, pygame.sprite.collide_mask)
-		if collided:
-			for sprite in collided:
-				sprite.hp -= 1
 			self.kill()

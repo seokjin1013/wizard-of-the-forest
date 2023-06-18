@@ -6,19 +6,18 @@ from monster import *
 from player import Player
 from view import View
 from monster_constuctor import MonsterConstuctor
+from Box2D import *
 
-ww.player = Player((640,360), 120)
-ww.player_group = pygame.sprite.GroupSingle(ww.player)
-ww.group.add(ww.player_group)
+ww.group = pygame.sprite.LayeredUpdates()
+ww.player = Player((640,360))
+ww.group.add(ww.player)
 ww.view = View(target=ww.player, debug=True)
-ww.tree_group = pygame.sprite.Group()
-ww.monster_constuctor = MonsterConstuctor()
+ww.monster_constructor = MonsterConstuctor()
 
-for i in range(20):
+for i in range(50):
 	random_x = random.randint(0,1000)
 	random_y = random.randint(0,1000)
-	ww.tree_group.add(Tree((random_x, random_y)))
-ww.group.add(ww.tree_group)
+	ww.group.add(Tree((random_x, random_y)))
 
 while True:
 	for event in pygame.event.get():
@@ -29,8 +28,19 @@ while True:
 			if event.key == pygame.K_ESCAPE:
 				pygame.quit()
 				sys.exit()
-	ww.view.step()
-	ww.view.draw()
-	ww.monster_constuctor.update()
+
+	ww.monster_constructor.update()
+	ww.world.Step(1 / ww.FPS, 1, 1)
 	ww.group.update()
+	ww.view.update()
+	ww.view.draw()
 	pygame.display.update()
+	# ww.screen.fill('#71ddee')
+	# for sprite in ww.group.sprites():
+	# 	ww.group.change_layer(sprite, sprite.pos.y)
+	# ww.group.update()
+	# ww.group.draw(ww.screen)
+	# ww.view.update()
+	# ww.world.Step(1 / ww.FPS, 1, 1)
+	# pygame.display.update()
+	
