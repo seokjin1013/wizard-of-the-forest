@@ -5,12 +5,14 @@ import globals
 from monster import *
 from player import Player
 from view import View
-
+from monster_constructor import MonsterConstuctor
+	
 globals.player = Player((640,360), 120)
 globals.player_group = pygame.sprite.GroupSingle(globals.player)
 globals.group.add(globals.player_group)
 globals.view = View(target=globals.player, debug=True)
 globals.tree_group = pygame.sprite.Group()
+monster_constuctor = MonsterConstuctor()
 
 for i in range(20):
 	random_x = random.randint(0,1000)
@@ -31,4 +33,5 @@ while True:
 	globals.view.step()
 	globals.view.draw()
 	globals.group.update()
+	monster_constuctor.update()
 	pygame.display.update()
