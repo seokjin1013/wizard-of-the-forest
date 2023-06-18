@@ -1,29 +1,19 @@
-import pygame
+from instance import Instance
 import ww
+from Box2D import *
 
-class Tree(pygame.sprite.Sprite):
+class Tree(Instance):
 	def __init__(self, pos):
-		super().__init__()
-		self.pos = pygame.Vector2(pos)
-		self.image = ww.Images.tree
-		self.rect = self.image.get_rect(topleft=pos)
-		self.speed = 1
+		super().__init__(pos)
+		self.speed = 5
 		self.mhp = 5
 		self.hp = self.mhp
 
 	def update(self):
+		super().update()
 		vel = ww.player.pos - self.pos
-		vel = vel.normalize() * self.speed
+		vel.Normalize()
+		self.body.linearVelocity = vel * self.speed
 
-		for x in ww.tree_group.sprites():
-			if x is self:
-				continue
-			if self.rect.colliderect(x.rect):
-				vel = pygame.math.Vector2(x.rect.center) - pygame.math.Vector2(self.rect.center)
-				vel = vel.normalize() * self.speed * -3
-				break
-
-		self.pos += vel
-		self.rect.center = self.pos
 		if self.hp == 0:
 			self.kill()
