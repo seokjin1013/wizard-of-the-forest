@@ -31,6 +31,7 @@ backgrounds = {
     'stage1': pygame.image.load('assets/ground.png').convert_alpha()
 }
 
+# define collision shape
 def _get_ellipsis_vertices(cls, pos, size):
     precision = 16
     vertices = []
@@ -42,11 +43,13 @@ def _get_ellipsis_vertices(cls, pos, size):
         vertices.append(Box2D.b2Vec2(x, y))
     return vertices
 
+# define collision type
 class category_bits(IntEnum):
     PLAYER  = 0b0000_0000_0000_0001
     BULLET  = 0b0000_0000_0000_0010
     MONSTER = 0b0000_0000_0000_0100
 
+# attach object to fixture to do collision check
 fixture_defs = {
     Player: Box2D.b2FixtureDef(
         density=100.0, categoryBits=category_bits.PLAYER, maskBits=category_bits.MONSTER,

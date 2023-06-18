@@ -2,6 +2,7 @@ import pygame
 import ww
 import Box2D
 
+# object category class
 class Instance(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()

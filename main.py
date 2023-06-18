@@ -35,12 +35,3 @@ while True:
 	ww.view.update()
 	ww.view.draw()
 	pygame.display.update()
-	# ww.screen.fill('#71ddee')
-	# for sprite in ww.group.sprites():
-	# 	ww.group.change_layer(sprite, sprite.pos.y)
-	# ww.group.update()
-	# ww.group.draw(ww.screen)
-	# ww.view.update()
-	# ww.world.Step(1 / ww.FPS, 1, 1)
-	# pygame.display.update()
-	
