@@ -1,22 +1,24 @@
 import pygame
 import random
 import sys
-import globals
+import ww
 from monster import *
 from player import Player
 from view import View
+from monster_constuctor import MonsterConstuctor
 
-globals.player = Player((640,360), 120)
-globals.player_group = pygame.sprite.GroupSingle(globals.player)
-globals.group.add(globals.player_group)
-globals.view = View(target=globals.player, debug=True)
-globals.tree_group = pygame.sprite.Group()
+ww.player = Player((640,360), 120)
+ww.player_group = pygame.sprite.GroupSingle(ww.player)
+ww.group.add(ww.player_group)
+ww.view = View(target=ww.player, debug=True)
+ww.tree_group = pygame.sprite.Group()
+ww.monster_constuctor = MonsterConstuctor()
 
 for i in range(20):
 	random_x = random.randint(0,1000)
 	random_y = random.randint(0,1000)
-	globals.tree_group.add(Tree((random_x, random_y)))
-globals.group.add(globals.tree_group)
+	ww.tree_group.add(Tree((random_x, random_y)))
+ww.group.add(ww.tree_group)
 
 while True:
 	for event in pygame.event.get():
@@ -27,8 +29,8 @@ while True:
 			if event.key == pygame.K_ESCAPE:
 				pygame.quit()
 				sys.exit()
-
-	globals.view.step()
-	globals.view.draw()
-	globals.group.update()
+	ww.view.step()
+	ww.view.draw()
+	ww.monster_constuctor.update()
+	ww.group.update()
 	pygame.display.update()

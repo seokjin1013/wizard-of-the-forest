@@ -1,12 +1,12 @@
 import pygame
-import globals
+import ww
 from bullet import Bullet
 
 class Player(pygame.sprite.Sprite):
 	def __init__(self, pos, health):
 		super().__init__()
 		self.health = health
-		self.image = globals.Images.player
+		self.image = ww.Images.player
 		self.rect = self.image.get_rect(center=pos)
 		self.direction = pygame.math.Vector2()
 		self.speed = 5
@@ -31,7 +31,7 @@ class Player(pygame.sprite.Sprite):
 			self.direction.x = 0
 			
 		if pygame.mouse.get_pressed()[0] and self.attack_time == 0:
-			globals.group.add(Bullet(self.rect.center, 20))
+			ww.group.add(Bullet(self.rect.center, 20))
 			self.attack_time = self.attack_delay
 
 	def update(self):
