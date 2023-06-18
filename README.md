@@ -37,4 +37,7 @@ Move: W, A, S, D
 
 Attack: Mouse Click
 
-![Play Screenshot](readme/image.png)
+![Play Screenshot](readme/image1.png)
+![Play Screenshot](readme/image2.png)
+![Play Screenshot](readme/image3.png)
+![Play Screenshot](readme/image4.png)

@@ -1,150 +1,40 @@
-import pygame, sys
-from random import randint
+import pygame
+import ww
+import random
+import sys
+from monster import *
+from player import Player
+from view import View
+from monster_constuctor import MonsterConstuctor
+from controller import Controller
+from title import Title, TitleButton
 
-# window size
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+# set up for starting game
+ww.group = pygame.sprite.LayeredUpdates()
+ww.group.add(Title((320, 180)))
+def callback():
+	ww.phase = ww.PHASE.PLAY
+	ww.player = Player((320, 180))
+	ww.group.add(ww.player)
+	ww.view.target = ww.player
+ww.group.add(TitleButton((320, 280), 0, callback))
+ww.view = View()
+ww.monster_constructor = MonsterConstuctor()
+ww.controller = Controller()
 
-# enemy class
-class Tree(pygame.sprite.Sprite):
-	def __init__(self, pos):
-		super().__init__()
-		self.image = pygame.image.load('assets/tree.png').convert_alpha()
-		self.rect = self.image.get_rect(topleft=pos)
+for i in range(0):
+	random_x = random.randint(0,1000)
+	random_y = random.randint(0,100)
+	ww.group.add(Tree((random_x, random_y)))
 
-
-	def update(self):
-		if pygame.sprite.spritecollide(self, pygame.sprite.GroupSingle(player), False, pygame.sprite.collide_mask):
-			self.kill()
-
-# player class
-class Player(pygame.sprite.Sprite):
-	def __init__(self, pos):
-		super().__init__()
-		self.image = pygame.image.load('assets/player.png').convert_alpha()
-		self.rect = self.image.get_rect(center=pos)
-		self.direction = pygame.math.Vector2()
-		self.speed = 5
-
-	def input(self):
-		# input key
-		keys = pygame.key.get_pressed()
-
-		# move
-		if keys[pygame.K_w]:
-			self.direction.y = -1
-		elif keys[pygame.K_s]:
-			self.direction.y = 1
-		else:
-			self.direction.y = 0
-
-		if keys[pygame.K_d]:
-			self.direction.x = 1
-		elif keys[pygame.K_a]:
-			self.direction.x = -1
-		else:
-			self.direction.x = 0
-		
-		# attack
-		if pygame.mouse.get_pressed()[0]:
-			group.add(Bullet(self.rect, view.rect.topleft, 20))
-
-	def update(self):
-		self.input()
-		self.rect.center += self.direction * self.speed
-    		
-# bullet class
-class Bullet(pygame.sprite.Sprite):
-	def __init__(self, player_pos, camera_pos, duration_limit):
-		# set position, speed, velocity, some of physics variables
-		super().__init__()
-		self.duration_limit = duration_limit
-		self.dura = 0
-		self.image = pygame.Surface((10, 10))
-		self.image.fill((255, 0, 0))
-		self.pos = pygame.math.Vector2(player_pos.center)
-		self.rect = self.image.get_rect(center=self.pos)
-
-		self.speed = 15
-		self.vel = pygame.math.Vector2(pygame.mouse.get_pos()) + camera_pos - player_pos.center
-		self.vel = self.vel.normalize() * self.speed
-		
-	def update(self):
-		# move
-		self.pos += self.vel
-		self.rect.center = self.pos
-		if self.dura <= self.duration_limit:
-			self.dura += 1
-		else:
-			self.kill()
-
-		# if collide with enemy, kill both objects
-		if pygame.sprite.spritecollide(self, tree_group, True, pygame.sprite.collide_mask):
-			self.kill()
-		
-# camera class
-class View:
-	def __init__(self, rect, target=None):
-		self.rect = rect
-		self.target = target
-		self.bg = pygame.image.load('assets/ground.png').convert_alpha()
-		self.bg_rect = self.bg.get_rect(topleft=(0, 0))
-
-	def step(self):
-		# camera move along with player
-		if self.target:
-			self.rect.center = self.target.rect.center
-
-	def draw(self, group):
-		# render all of objects in group
-		global screen
-		screen.fill('#71ddee')
-		clip_rect = self.bg_rect.clip(self.rect)
-		screen_rect = clip_rect.move(-self.rect.left, -self.rect.top)
-		inside_rect = clip_rect.move(-self.bg_rect.left, -self.bg_rect.top)
-		screen.blit(self.bg, screen_rect, inside_rect)
-
-		# sort because represent depth
-		for sprite in sorted(group.sprites(), key=lambda sprite: sprite.rect.bottom):
-			clip_rect = sprite.rect.clip(self.rect)
-			screen_rect = clip_rect.move(-self.rect.left, -self.rect.top)
-			inside_rect = clip_rect.move(-sprite.rect.left, -sprite.rect.top)
-			screen.blit(sprite.image, screen_rect, inside_rect)
-
-# calculating fps and wait
-class FPS:
-    def __init__(self):
-        self.clock = pygame.time.Clock()
-        self.font = pygame.font.SysFont("Verdana", 20)
-        self.text = self.font.render(str(self.clock.get_fps()), True, (0, 0, 0))
- 
-    def render(self, display):
-        self.text = self.font.render(str(round(self.clock.get_fps(),2)), True, (0, 0, 0))
-        display.blit(self.text, (10, 10))
-
-
-# initial room settings
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-fps = FPS()
-
-group = pygame.sprite.Group()
-player = Player((640,360))
-player_group = pygame.sprite.GroupSingle(player)
-group.add(player_group)
-
-view = View(pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), player)
-tree_group = pygame.sprite.Group()
-
-for i in range(20):
-	random_x = randint(0,1000)
-	random_y = randint(0,1000)
-	tree_group.add(Tree((random_x, random_y)))
-group.add(tree_group)
-
+clock = pygame.time.Clock()
+clock2 = pygame.time.Clock()
+delayed_time = 0
 
 # runtime loop
+
 while True:
+	# function key
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			pygame.quit()
@@ -154,9 +44,23 @@ while True:
 				pygame.quit()
 				sys.exit()
 
-	view.step()
-	view.draw(group)
-	group.update()
-	fps.render(screen)
-	pygame.display.update()
-	fps.clock.tick(60)
+	delayed_time += clock.tick() - 1000 / ww.FPS
+
+	# loop operation
+	if ww.phase == ww.PHASE.PLAY:
+		ww.monster_constructor.update()
+	ww.controller.update()
+	ww.world.Step(1 / ww.FPS, 1, 1)
+	ww.group.update()
+	ww.view.update()
+
+	# frameskip
+	if delayed_time < 0:
+		clock2.tick(ww.FPS)
+		ww.view.debug_text.append(round(clock.get_fps(), 2))
+		ww.view.debug_text.append(round(clock2.get_fps(), 2))
+		ww.view.debug_text.append(len(ww.group))
+		ww.view.draw()
+		pygame.display.flip()
+
+	
