@@ -162,7 +162,7 @@ while True:
 			if event.key == pygame.K_ESCAPE:
 				pygame.quit()
 				sys.exit()
-		if event.type == pygame.MOUSEBUTTONDOWN:
+		if pygame.mouse.get_pressed()[0]:
 			camera_group.add(player.create_bullet(camera_group.offset, camera_group))
 			
 		if event.type == pygame.MOUSEWHEEL:
