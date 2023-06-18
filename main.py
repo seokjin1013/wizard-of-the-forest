@@ -6,14 +6,27 @@ from monster import *
 from player import Player
 from view import View
 from monster_constuctor import MonsterConstuctor
+from controller import Controller
+from title import Title, TitleButton
 
 ww.group = pygame.sprite.LayeredUpdates()
-ww.player = Player((0, 0))
-ww.group.add(ww.player)
-ww.view = View(target=ww.player)
+# ww.player = Player((640, 320))
+# ww.group.add(ww.player)
+# ww.group.add(Title((320, 100)))
+ww.group.add(Title((320, 180)))
+def callback():
+	ww.phase = ww.PHASE.PLAY
+	ww.player = Player((320, 180))
+	ww.group.add(ww.player)
+	ww.view.target = ww.player
+ww.group.add(TitleButton((320, 280), 0, callback))
+# ww.group.add(TitleButton((320, 260), 1))
+# ww.group.add(TitleButton((320, 320), 2))
+ww.view = View()
 ww.monster_constructor = MonsterConstuctor()
+ww.controller = Controller()
 
-for i in range(50):
+for i in range(0):
 	random_x = random.randint(0,1000)
 	random_y = random.randint(0,100)
 	ww.group.add(Tree((random_x, random_y)))
@@ -34,12 +47,14 @@ while True:
 
 	delayed_time += clock.tick() - 1000 / ww.FPS
 
-	# ww.monster_constructor.update()
+	if ww.phase == ww.PHASE.PLAY:
+		ww.monster_constructor.update()
+	ww.controller.update()
 	ww.world.Step(1 / ww.FPS, 1, 1)
 	ww.group.update()
 	ww.view.update()
 	if delayed_time < 0:
-		clock2.tick(60)
+		clock2.tick(ww.FPS)
 		ww.view.debug_text.append(round(clock.get_fps(), 2))
 		ww.view.debug_text.append(round(clock2.get_fps(), 2))
 		ww.view.debug_text.append(len(ww.group))
