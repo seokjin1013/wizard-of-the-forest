@@ -50,41 +50,40 @@ class Player(pygame.sprite.Sprite):
 			
 		# attack
 		if pygame.mouse.get_pressed()[0] and self.attack_time == 0:
-			group.add(Bullet(self.rect, view.rect.topleft))
+			group.add(Bullet(self.rect.center, 20))
 			self.attack_time = self.attack_delay
 
 	def update(self):
 		self.input()
 		self.rect.center += self.direction * self.speed
 		self.attack_time = max(self.attack_time - 1, 0)
-    		
+
 # bullet class
 class Bullet(pygame.sprite.Sprite):
-	def __init__(self, player_pos, camera_pos):
+	def __init__(self, pos, life):
 		# set position, speed, velocity, some of physics variables
 		super().__init__()
-		self.image = pygame.Surface((10, 10))
-		self.image.fill((255, 0, 0))
-		self.pos = pygame.math.Vector2(player_pos.center)
+		self.life = life
+		
+		self.pos = pygame.math.Vector2(pos)
 		self.image = pygame.image.load('assets/bullet.png').convert_alpha()
 		self.rect = self.image.get_rect(center=self.pos)
 
-		dx = pygame.math.Vector2(pygame.mouse.get_pos())[0] - player_pos.center[0]
-		dy = pygame.math.Vector2(pygame.mouse.get_pos())[1] - player_pos.center[1]
-		rads = atan2(-dy, dx)
-		rads %= 2*pi
-		degs = degrees(rads)
-		
-		self.image = pygame.transform.rotate(self.image, degs)
-
 		self.speed = 15
-		self.vel = pygame.math.Vector2(pygame.mouse.get_pos()) + camera_pos - player_pos.center
+		self.vel = pygame.math.Vector2(pygame.mouse.get_pos()) + view.rect.topleft - pos
+		rads = atan2(-self.vel.y, self.vel.x)
+		degs = degrees(rads)
+		self.image = pygame.transform.rotate(self.image, degs)
 		self.vel = self.vel.normalize() * self.speed
 		
 	def update(self):
 		# move
 		self.pos += self.vel
 		self.rect.center = self.pos
+		if self.life:
+			self.life -= 1
+		else:
+			self.kill()
 
 		# if collide with enemy, kill both objects
 		if pygame.sprite.spritecollide(self, tree_group, True, pygame.sprite.collide_mask):
